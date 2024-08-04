@@ -1,8 +1,8 @@
 import sys
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QAction, QToolBar, QComboBox, 
-                             QStatusBar, QCheckBox, QLabel, QWidget, QHBoxLayout, QVBoxLayout, 
+                             QStatusBar, QCheckBox, QLabel, QWidget, QVBoxLayout, 
                              QTextEdit, QSplitter, QFrame, QGridLayout, QSizePolicy, QTableWidget, QTableWidgetItem)
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtCore import Qt
 from functions import Functions
 
@@ -25,8 +25,11 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("Finger Identification Technology Sample")
+        self.setWindowTitle("Finger Print SDK")
         self.setGeometry(100, 100, 1000, 600)
+
+        # Set the window icon
+        self.setWindowIcon(QIcon('src/fingerprint.png'))  # Update the path to your icon file
 
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
@@ -60,12 +63,9 @@ class MainWindow(QMainWindow):
         self.id_label = QLabel()
         score_id_grid.addWidget(self.score_label, 1, 0)
         score_id_grid.addWidget(self.id_label, 1, 1)
-        score_id_widget.setLayout(score_id_grid)
+        score_id_layout.addLayout(score_id_grid)
 
-        # Create a container to align score_id_widget to the bottom
-        score_id_container = QWidget()
-        score_id_container.setLayout(score_id_layout)
-        score_id_layout.addWidget(score_id_widget)
+        score_id_widget.setLayout(score_id_layout)
         
         # Message area (right side) - Changed to QTableWidget
         self.message_area2 = QTableWidget()
@@ -87,15 +87,47 @@ class MainWindow(QMainWindow):
     def create_menu_bar(self):
         menu_bar = self.menuBar()
 
+        # File menu
         file_menu = menu_bar.addMenu('File')
-        open_action = QAction('Open', self)
+        open_action = QAction('Open Image', self)
         open_action.triggered.connect(self.functions.open_file)
+        save_action = QAction('Save Results', self)
+        save_action.triggered.connect(self.functions.save_results)
         exit_action = QAction('Exit', self, triggered=self.close)
         file_menu.addAction(open_action)
+        file_menu.addAction(save_action)
         file_menu.addAction(exit_action)
 
+        # Tools menu
         tools_menu = menu_bar.addMenu('Tools')
+        enroll_action = QAction('Enroll Fingerprint', self)
+        enroll_action.triggered.connect(self.functions.enroll)
+        identify_action = QAction('Identify Fingerprint', self)
+        identify_action.triggered.connect(self.functions.identify)
+        verify_action = QAction('Verify Fingerprint', self)
+        verify_action.triggered.connect(self.functions.verify)
+        match_action = QAction('Match Fingerprints', self)
+        match_action.triggered.connect(self.functions.match)
+        preprocess_action = QAction('Preprocess Image', self)
+        preprocess_action.triggered.connect(self.functions.preprocess)
+        enhance_action = QAction('Enhance Image', self)
+        enhance_action.triggered.connect(self.functions.enhance)
+        segment_action = QAction('Segment Image', self)
+        segment_action.triggered.connect(self.functions.segment)
+        
+        tools_menu.addAction(enroll_action)
+        tools_menu.addAction(identify_action)
+        tools_menu.addAction(verify_action)
+        tools_menu.addAction(match_action)
+        tools_menu.addAction(preprocess_action)
+        tools_menu.addAction(enhance_action)
+        tools_menu.addAction(segment_action)
+
+        # Help menu
         help_menu = menu_bar.addMenu('Help')
+        about_action = QAction('About', self)
+        about_action.triggered.connect(self.functions.about)
+        help_menu.addAction(about_action)
 
     def create_tool_bar(self):
         tool_bar = QToolBar("Main Toolbar")
@@ -113,6 +145,8 @@ class MainWindow(QMainWindow):
         tool_bar.addAction(enroll_action)
         tool_bar.addAction(identify_action)
         tool_bar.addAction(verify_action)
+        
+        tool_bar.addSeparator()  # Add separator
 
         self.check_duplicates_check_box = QCheckBox("Check for duplicates")
         tool_bar.addWidget(self.check_duplicates_check_box)
@@ -123,6 +157,8 @@ class MainWindow(QMainWindow):
         tool_bar.addWidget(self.from_file_combo)
 
         tool_bar.addAction(save_image_action)
+        
+        tool_bar.addSeparator()  # Add separator
 
     def create_status_bar(self):
         status_bar = QStatusBar()
