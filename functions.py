@@ -55,6 +55,10 @@ class Functions:
     def about(self):
         QMessageBox.about(self.main_window, "About", "Fingerprint SDK Application\nVersion 1.0")
 
+    def back(self):
+        # Implement back button functionality
+        pass
+
     def save_image(self):
         options = QFileDialog.Options()
         file_name, _ = QFileDialog.getSaveFileName(self.main_window, "Save Image", "", "Images (*.png *.jpg *.bmp *.gif);;All Files (*)", options=options)
@@ -68,3 +72,16 @@ class Functions:
 
     def from_file_changed(self, index):
         print(f"From file changed action triggered with index {index}")
+
+    def __init__(self, main_window):
+        self.main_window = main_window
+        # ... other initialization code ...
+
+    def reset(self):
+        # Reset any stored data or state
+        # For example:
+        self.current_image = None
+        self.enrolled_fingerprints = []
+        # ... reset any other attributes ...
+
+    # ... other methods ...
